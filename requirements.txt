@@ -1,0 +1,10 @@
+torch>=2.0.0
+torchaudio>=2.0.0
+numpy>=1.21.0
+matplotlib>=3.4.0
+scipy>=1.7.0
+soundfile>=0.11.0
+PyYAML>=5.4.0
+
+# Only needed to reproduce scripts/fetch_librispeech_samples.py (HF streaming path)
+datasets>=2.14.0

@@ -1,0 +1,11 @@
+{
+  "source_filenames": [
+    "6930-75918-0000.flac",
+    "1320-122617-0001.flac"
+  ],
+  "speaker_ids": [
+    "6930",
+    "1320"
+  ],
+  "target_layer": "TCN.TCN.12.conv1d"
+}

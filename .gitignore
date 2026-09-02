@@ -1,0 +1,23 @@
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+.idea/
+.vscode/
+
+# Weights are hosted in the original Sep-TFAnet-VAD repo; see README for
+# where to download and place them locally.
+weights/*.pth
+
+# LibriSpeech audio is copyrighted; fetch it locally via scripts/fetch_librispeech_samples.py.
+data/librispeech_samples/
+data/librispeech_torchaudio_download/
+
+*.log
+.DS_Store
+Thumbs.db
