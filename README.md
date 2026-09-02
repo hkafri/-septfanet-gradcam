@@ -1,9 +1,7 @@
 # Sep-TFAnet-VAD Grad-CAM
 
-Grad-CAM interpretability for [Sep-TFAnet-VAD](https://github.com/MordehayM/Sep-TFAnet-VAD), a PyTorch single-microphone
-speaker-separation + voice-activity-detection (VAD) network. The Grad-CAM implementation itself was adapted from a
-Keras video/regression Grad-CAM approach and reworked here for a 1-D convolutional audio TCN, targeting real
-LibriSpeech mixtures.
+Grad-CAM interpretability for [Sep-TFAnet-VAD](https://github.com/MordehayM/Sep-TFAnet-VAD), a PyTorch
+speaker-separation/VAD network — adapted from image-based Grad-CAM and validated on real LibriSpeech audio.
 
 ## Attribution
 
