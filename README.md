@@ -125,8 +125,8 @@ See `results/librispeech_gradcam/final/`:
 | VAD-logit CAM, speaker 0 vs. speaker 1 | 0.253 | 0.228 | 0.457 |
 | Waveform CAM, speaker 0 vs. speaker 1 | 0.253 | 0.229 | 0.491 |
 
-C:\Users\user\Desktop\UNI\Project_KHCNN\Project\septfanet-gradcam\results\librispeech_gradcam\final\example_speaker0.png
-C:\Users\user\Desktop\UNI\Project_KHCNN\Project\septfanet-gradcam\results\librispeech_gradcam\final\example_speaker1.png
+<img width="3317" height="767" alt="example_speaker0" src="https://github.com/user-attachments/assets/b05e322b-2459-4c48-ac1a-71b000f80c25" />
+<img width="3317" height="767" alt="example_speaker1" src="https://github.com/user-attachments/assets/58b4d542-ab32-420d-9c0d-69fa363d828e" />
 
 Real speaker-vs-speaker CAMs are consistently more self-similar (lower MAE) than real-vs-random-noise. This is a
 promising initial result, not a settled conclusion — see limitations below.
