@@ -1,0 +1,32 @@
+{
+  "num_pairs": 35,
+  "target_layer": "TCN.TCN.9.conv1d",
+  "vad_logit": {
+    "real_mae_mean": 0.25707382854278266,
+    "real_mae_std": 0.09305720439508469,
+    "shared_mae_mean": 0.22868866079619954,
+    "shared_mae_std": 0.09102386336447024,
+    "random_control_mae_mean": 0.4131036600504313,
+    "random_control_mae_std": 0.05818121747054799,
+    "wilcoxon": {
+      "w_statistic": 31.0,
+      "p_value": 1.382431946694851e-07,
+      "rank_biserial_r": 0.9015873015873016,
+      "effect_size_r": 0.7862768548781064
+    }
+  },
+  "waveform": {
+    "real_mae_mean": 0.24106889674047882,
+    "real_mae_std": 0.07098589242808988,
+    "shared_mae_mean": 0.20287600244794574,
+    "shared_mae_std": 0.08273255470367821,
+    "random_control_mae_mean": 0.42562361617813255,
+    "random_control_mae_std": 0.055544764920144075,
+    "wilcoxon": {
+      "w_statistic": 6.0,
+      "p_value": 8.149072527885437e-10,
+      "rank_biserial_r": 0.9809523809523809,
+      "effect_size_r": 0.8554913667511792
+    }
+  }
+}

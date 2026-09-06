@@ -1,6 +1,8 @@
 {
   "num_pairs": 20,
   "target_layer": "TCN.TCN.9.conv1d",
+  "data_root": "data\\librispeech_samples",
+  "seed_offset": 1000,
   "vad_logit": {
     "real_mae_mean": 0.2563732265618573,
     "real_mae_std": 0.10937682573825254,

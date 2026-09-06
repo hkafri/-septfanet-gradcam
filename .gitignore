@@ -16,6 +16,7 @@ weights/*.pth
 
 # LibriSpeech audio is copyrighted; fetch it locally via scripts/fetch_librispeech_samples.py.
 data/librispeech_samples/
+data/librispeech_holdout/
 data/librispeech_torchaudio_download/
 
 *.log

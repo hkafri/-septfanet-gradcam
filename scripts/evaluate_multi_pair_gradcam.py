@@ -93,15 +93,15 @@ def minmax(values, scale=1.0):
     return result * scale
 
 
-def compute_pair_metrics(left, right, pair_idx):
+def compute_pair_metrics(left, right, pair_idx, seed_offset=1000):
     ind_left = minmax(left)
     ind_right = minmax(right)
     shared_scale = max(float(left.max()), float(right.max()), 1e-12)
     shared_left = np.maximum(left, 0) / shared_scale
     shared_right = np.maximum(right, 0) / shared_scale
 
-    # Reproducible random control per pair
-    rng = np.random.default_rng(seed=1000 + pair_idx)
+    # Reproducible random control per pair with non-colliding seed offset
+    rng = np.random.default_rng(seed=seed_offset + pair_idx)
     random_map = rng.random(left.shape)
 
     return {
@@ -186,10 +186,15 @@ def main():
     parser.add_argument("--librispeech-root", type=Path, default=Path("data/librispeech_samples"))
     parser.add_argument("--device", default="cpu")
     parser.add_argument("--num-pairs", type=int, default=NUM_PAIRS)
+    parser.add_argument("--seed-offset", type=int, default=1000)
+    parser.add_argument("--target-layer", default=None)
+    parser.add_argument("--csv-output", type=Path, default=None)
+    parser.add_argument("--summary-output", type=Path, default=None)
+    parser.add_argument("--plot-output", type=Path, default=None)
     args = parser.parse_args()
 
-    target_layer = load_selected_layer()
-    print(f"[*] Multi-Pair Evaluation using Target Layer: {target_layer}")
+    target_layer = args.target_layer if args.target_layer else load_selected_layer()
+    print(f"[*] Multi-Pair Evaluation using Target Layer: {target_layer} (Seed Offset: {args.seed_offset})")
 
     sampler = SpeakerSampler(str(args.librispeech_root), seed=123)
     speaker_ids = sampler.speaker_ids
@@ -204,7 +209,7 @@ def main():
     model.load_state_dict(checkpoint.get("state_dict", checkpoint), strict=True)
 
     pair_results = []
-    print(f"[*] Processing {args.num_pairs} non-overlapping speaker pairs...")
+    print(f"[*] Processing {args.num_pairs} non-overlapping speaker pairs from {args.librispeech_root}...")
 
     for i in range(args.num_pairs):
         spk1, spk2 = speaker_ids[2 * i], speaker_ids[2 * i + 1]
@@ -229,8 +234,8 @@ def main():
             cams["vad_logit"].append(vad_cam)
             cams["waveform"].append(wave_cam)
 
-        vad_m = compute_pair_metrics(cams["vad_logit"][0], cams["vad_logit"][1], i)
-        wave_m = compute_pair_metrics(cams["waveform"][0], cams["waveform"][1], i)
+        vad_m = compute_pair_metrics(cams["vad_logit"][0], cams["vad_logit"][1], i, seed_offset=args.seed_offset)
+        wave_m = compute_pair_metrics(cams["waveform"][0], cams["waveform"][1], i, seed_offset=args.seed_offset)
 
         p_res = {
             "pair_index": i + 1,
@@ -255,7 +260,7 @@ def main():
         print(f"  Pair {i+1:02d} ({spk1} vs {spk2}): VAD MAE={vad_m['ind_mae']:.4f} (vs Rand {vad_m['random_mae']:.4f}), Wave MAE={wave_m['ind_mae']:.4f} (vs Rand {wave_m['random_mae']:.4f})")
 
     # Save CSV
-    csv_path = gradcam_root / "results" / "librispeech_gradcam" / "multi_pair_results.csv"
+    csv_path = args.csv_output if args.csv_output else (gradcam_root / "results" / "librispeech_gradcam" / "multi_pair_results.csv")
     csv_path.parent.mkdir(parents=True, exist_ok=True)
     fieldnames = list(pair_results[0].keys())
     with open(csv_path, "w", newline="") as f:
@@ -275,6 +280,8 @@ def main():
     summary = {
         "num_pairs": args.num_pairs,
         "target_layer": target_layer,
+        "data_root": str(args.librispeech_root),
+        "seed_offset": args.seed_offset,
         "vad_logit": {
             "real_mae_mean": float(np.mean(vad_real_maes)),
             "real_mae_std": float(np.std(vad_real_maes)),
@@ -295,10 +302,10 @@ def main():
         },
     }
 
-    summary_path = gradcam_root / "results" / "librispeech_gradcam" / "multi_pair_summary.json"
+    summary_path = args.summary_output if args.summary_output else (gradcam_root / "results" / "librispeech_gradcam" / "multi_pair_summary.json")
     summary_path.write_text(json.dumps(summary, indent=2))
 
-    plot_path = gradcam_root / "results" / "librispeech_gradcam" / "paired_comparison_plot.png"
+    plot_path = args.plot_output if args.plot_output else (gradcam_root / "results" / "librispeech_gradcam" / "paired_comparison_plot.png")
     create_paired_comparison_plot(pair_results, plot_path)
 
     print("\n" + "=" * 70)
