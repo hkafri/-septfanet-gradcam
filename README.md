@@ -77,9 +77,9 @@ python scripts/evaluate_multi_pair_gradcam.py --librispeech-root data/librispeec
 
 This pipeline will:
 1. Stream 40 distinct real speakers from LibriSpeech `test-clean` to form 20 non-overlapping pairs.
-2. Quantitatively score all 24 TCN conv1d candidate layers and select the optimal layer (`TCN.TCN.6.conv1d`).
+2. Quantitatively score all 24 TCN conv1d candidate layers using a non-monotonic entropy penalty and select the optimal layer (`TCN.TCN.9.conv1d`).
 3. Compute VAD-logit and waveform CAMs across all 20 pairs.
-4. Output aggregate statistics (Mean ± Std), run a paired Wilcoxon signed-rank test against random controls, and save [multi_pair_results.csv](results/librispeech_gradcam/multi_pair_results.csv) and [paired_comparison_plot.png](results/librispeech_gradcam/paired_comparison_plot.png).
+4. Output aggregate statistics (Mean ± Std), run a paired Wilcoxon signed-rank test against independent random controls, and save [multi_pair_results.csv](results/librispeech_gradcam/multi_pair_results.csv) and [paired_comparison_plot.png](results/librispeech_gradcam/paired_comparison_plot.png).
 
 ## Methodology
 
@@ -105,48 +105,50 @@ This repo instead reports **mean absolute difference (MAE)**, plus the max-diff 
 independently min-max-normalized comparison and a shared-scale comparison, always alongside a random-noise control:
 
 ```
-VAD-logit CAM, speaker vs speaker: MAE = 0.236 ± 0.096 (max diff ≈ 1.000)
-VAD-logit CAM, speaker vs random noise: MAE = 0.418 ± 0.039 (max diff ≈ 0.995)
+VAD-logit CAM, speaker vs speaker: MAE = 0.256 ± 0.109 (max diff ≈ 1.000)
+VAD-logit CAM, speaker vs random noise: MAE = 0.409 ± 0.057 (max diff ≈ 0.934)
 ```
 
 The max-diff numbers alone would suggest the real-vs-real and real-vs-random comparisons are equally "different."
 The MAE numbers show the real speaker-vs-speaker CAMs are noticeably more self-similar to each other than either is
 to random noise.
 
-### 3. Principled layer selection via multi-metric scoring
+### 3. Principled layer selection via non-monotonic entropy scoring
 
-Rather than picking an arbitrary layer index, all 24 TCN `conv1d` candidate layers (`TCN.TCN.0.conv1d` through `TCN.TCN.23.conv1d`) were systematically evaluated on a sample of LibriSpeech pairs across three quantitative metrics:
-- **Gradient signal strength**: mean absolute gradient at that layer ($\text{mean}(|G|)$).
-- **Representation richness**: variance of activations at that layer ($\text{var}(A)$).
-- **CAM quality**: normalized Shannon entropy of the resulting Grad-CAM heatmap ($H_{\text{norm}}(\text{CAM}) \in [0, 1]$).
+Rather than picking an arbitrary layer index or monotonically rewarding diffuse heatmaps, all 24 TCN `conv1d` candidate layers (`TCN.TCN.0.conv1d` through `TCN.TCN.23.conv1d`) were systematically evaluated across all $N=20$ LibriSpeech speaker pairs using three quantitative metrics:
+- **Gradient signal strength**: mean absolute gradient at that layer ($\text{mean}(|G|)$, log-transformed & z-scored).
+- **Representation richness**: variance of activations at that layer ($\text{var}(A)$, log-transformed & z-scored).
+- **CAM quality (non-monotonic)**: quadratic/absolute penalty for deviation from an optimal mid-range target entropy of $0.65$ ($-\text{abs}(H_{\text{norm}}(\text{CAM}) - 0.65)$, z-scored). This penalizes both degenerate uninformative uniform maps (entropy $\approx 1.0$) and single-pixel spike artifacts (entropy $\approx 0.0$).
 
 Each metric was z-scored across layers and averaged to produce a combined layer score.
-- **Winning layer**: `TCN.TCN.6.conv1d` (Combined Score: **+0.7387**, Mean Gradient: $5.61 \times 10^{-4}$, Activation Variance: $3.48$, CAM Entropy: $0.852$).
-- Top runners-up: `TCN.TCN.8.conv1d` (+0.5395) and `TCN.TCN.13.conv1d` (+0.4130).
+- **Winning layer**: `TCN.TCN.9.conv1d` (Block 9 of 24) — Combined Score: **+0.8931**, Mean Gradient: $1.96 \times 10^{-3}$, Activation Variance: $2.91$, CAM Entropy: $0.762$.
+- Top runners-up: `TCN.TCN.11.conv1d` (+0.6865) and `TCN.TCN.15.conv1d` (+0.6148).
 
-Full layer rankings and bar charts are saved in [layer_scores.json](results/layer_selection/layer_scores.json) and [layer_scores.png](results/layer_selection/layer_scores.png).
+A visual comparison of CAM heatmaps across block depths ([cam_visual_comparison.png](results/layer_selection/cam_visual_comparison.png)) confirms that earlier blocks (e.g. Block 6) produce overly diffuse, blob-like attention maps, while mid-to-late blocks (e.g. Block 9 and Block 15) produce well-localized, temporally discriminative feature activations.
+
+Full layer rankings and bar charts across all 24 blocks are saved in [layer_scores.json](results/layer_selection/layer_scores.json) and [layer_scores.png](results/layer_selection/layer_scores.png).
 
 ## Results
 
-Statistical validation across **$N = 20$ non-overlapping speaker pairs** (40 distinct speakers from LibriSpeech `test-clean`):
+Statistical validation across **$N = 20$ non-overlapping speaker pairs** (40 distinct speakers from LibriSpeech `test-clean`), using freshly drawn independent random control maps per pair:
 
 | Target Kind | Real Speaker-vs-Speaker MAE | Real-vs-Random Control MAE | Wilcoxon $W$ | $p$-value | Rank-Biserial $r$ |
 |---|---|---|---|---|---|
-| **VAD-Logit CAM** | **$0.2363 \pm 0.0959$** | $0.4177 \pm 0.0394$ | $1.0$ | **$3.81 \times 10^{-6}$** | **$0.990$** |
-| **Waveform CAM** | **$0.2595 \pm 0.0772$** | $0.4146 \pm 0.0595$ | $6.0$ | **$2.67 \times 10^{-5}$** | **$0.943$** |
+| **VAD-Logit CAM** | **$0.2564 \pm 0.1094$** | $0.4090 \pm 0.0571$ | $17.0$ | **$3.95 \times 10^{-4}$** | **$0.838$** |
+| **Waveform CAM** | **$0.2497 \pm 0.0747$** | $0.4132 \pm 0.0523$ | $5.0$ | **$1.91 \times 10^{-5}$** | **$0.952$** |
 
 ### Key Artifacts & Visualizations
 
 - **Paired Comparison Plot**: [paired_comparison_plot.png](results/librispeech_gradcam/paired_comparison_plot.png) (shows real MAE vs random control MAE across all 20 speaker pairs).
 - **Layer Selection Scores**: [layer_scores.png](results/layer_selection/layer_scores.png) (bar chart ranking all 24 TCN conv1d blocks).
+- **CAM Heatmap Depth Comparison**: [cam_visual_comparison.png](results/layer_selection/cam_visual_comparison.png) (visual comparison of heatmaps across block depths).
 - **Per-Pair CSV Data**: [multi_pair_results.csv](results/librispeech_gradcam/multi_pair_results.csv) (individual metrics for all 20 pairs).
 - **Single Pair Example**: see `results/librispeech_gradcam/final/` (`example_speaker0.png`, `example_speaker1.png`, and `source_speakers_comparison.jpg`).
 
-Real speaker-vs-speaker CAMs are statistically significantly more self-similar (lower MAE, $p < 0.0001$) than real-vs-random-noise across all 20 independent speaker pairs, with a very large effect size ($r > 0.94$).
+Real speaker-vs-speaker CAMs are statistically significantly more self-similar (lower MAE, $p < 0.001$) than real-vs-random-noise across all 20 independent speaker pairs, with a very large effect size ($r \ge 0.838$).
 
 ## Limitations / Next Steps
 
-- **Layer selection sample size**: The initial layer-selection scoring ablation was conducted on a 5-pair sample subset before running the 20-pair evaluation.
 - **Corpus scope**: Validation was conducted on 2-speaker 3.0s mixtures from LibriSpeech `test-clean`. Performance on noisy, reverberant, or in-the-wild speech remains an avenue for future work.
-- **Single winning layer evaluated**: Multi-pair validation was conducted using the optimal selected layer (`TCN.TCN.6.conv1d`).
+- **Single winning layer evaluated in 20-pair test**: Multi-pair statistical validation was conducted using the optimal selected layer (`TCN.TCN.9.conv1d`).
 - **CPU execution**: Benchmarks and verification were performed on CPU (`--device cpu`). GPU execution is supported via `--device cuda`.

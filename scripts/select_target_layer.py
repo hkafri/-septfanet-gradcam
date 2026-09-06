@@ -1,9 +1,9 @@
 """Select optimal Grad-CAM target layer among all TCN conv1d blocks.
 
-Scores candidate layers on 5 speaker pairs using 3 criteria:
-1. Gradient signal strength (mean absolute gradient)
-2. Representation richness (activation variance)
-3. CAM quality (normalized entropy of heatmap)
+Scores candidate layers using 3 criteria:
+1. Gradient signal strength: mean absolute gradient (log-transformed & z-scored)
+2. Representation richness: activation variance (log-transformed & z-scored)
+3. CAM quality: penalty for deviation from target entropy 0.65 (-|entropy - 0.65|, z-scored)
 
 Artifacts saved:
 - results/layer_selection/layer_scores.json
@@ -28,7 +28,8 @@ from gradcam import GradCAMHook
 
 SAMPLE_RATE = 16000
 TARGET_SECONDS = 3.0
-NUM_PAIRS = 5
+NUM_PAIRS = 20
+TARGET_ENTROPY = 0.65
 
 
 def normalize_audio(audio):
@@ -110,24 +111,24 @@ def evaluate_candidate_layers(model, candidate_layers, pairs, device):
     return layer_metrics
 
 
-def score_and_rank_layers(layer_metrics):
+def score_and_rank_layers(layer_metrics, target_entropy=TARGET_ENTROPY):
     layers = list(layer_metrics.keys())
     
-    # Average across samples per layer
     avg_grad = np.array([np.mean(layer_metrics[l]["grad_strength"]) for l in layers])
     avg_rep = np.array([np.mean(layer_metrics[l]["rep_richness"]) for l in layers])
     avg_cam = np.array([np.mean(layer_metrics[l]["cam_quality"]) for l in layers])
 
-    # Log-transform positive quantities before z-scoring
     log_grad = np.log(avg_grad + 1e-12)
     log_rep = np.log(avg_rep + 1e-12)
 
-    # Z-scores
+    # Corrected non-monotonic entropy term: penalize deviation from target_entropy (0.65)
+    ent_penalty = -np.abs(avg_cam - target_entropy)
+
     z_grad = (log_grad - np.mean(log_grad)) / (np.std(log_grad) + 1e-8)
     z_rep = (log_rep - np.mean(log_rep)) / (np.std(log_rep) + 1e-8)
-    z_cam = (avg_cam - np.mean(avg_cam)) / (np.std(avg_cam) + 1e-8)
+    z_ent_pen = (ent_penalty - np.mean(ent_penalty)) / (np.std(ent_penalty) + 1e-8)
 
-    combined_scores = (z_grad + z_rep + z_cam) / 3.0
+    combined_scores = (z_grad + z_rep + z_ent_pen) / 3.0
 
     rankings = []
     for idx, layer in enumerate(layers):
@@ -138,20 +139,17 @@ def score_and_rank_layers(layer_metrics):
             "combined_score": float(combined_scores[idx]),
             "z_grad": float(z_grad[idx]),
             "z_rep": float(z_rep[idx]),
-            "z_cam": float(z_cam[idx]),
+            "z_ent_penalty": float(z_ent_pen[idx]),
             "avg_grad_strength": float(avg_grad[idx]),
             "avg_rep_richness": float(avg_rep[idx]),
             "avg_cam_quality": float(avg_cam[idx]),
         })
 
-    # Sort descending by score, tie-break preferring later block_index if scores are within 0.02
     rankings.sort(key=lambda x: (x["combined_score"], x["block_index"]), reverse=True)
-
     return rankings
 
 
 def plot_layer_scores(rankings, output_path):
-    # Sort by block index for clean 0 -> 23 visualization
     by_block = sorted(rankings, key=lambda x: x["block_index"])
     blocks = [x["block_index"] for x in by_block]
     scores = [x["combined_score"] for x in by_block]
@@ -165,10 +163,9 @@ def plot_layer_scores(rankings, output_path):
     ax.axhline(0, color="gray", linestyle="--", linewidth=0.8)
     ax.set_title(f"TCN Layer Selection Scores (Winner: {winner['layer']}, Score: {winner['combined_score']:.3f})", fontsize=12, fontweight="bold")
     ax.set_xlabel("TCN Block Index")
-    ax.set_ylabel("Combined Z-Score (Grad + Rep + CAM Quality)")
+    ax.set_ylabel("Combined Z-Score (Grad + Rep + Non-Monotonic Entropy Penalty)")
     ax.tick_params(axis="x", rotation=45)
 
-    # Highlight winner
     ax.annotate(
         f"Winner: {winner['layer']}",
         xy=(f"Block {winner['block_index']}", winner["combined_score"]),
