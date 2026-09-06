@@ -1,0 +1,269 @@
+{
+  "winning_layer": "TCN.TCN.6.conv1d",
+  "rankings": [
+    {
+      "layer": "TCN.TCN.6.conv1d",
+      "block_index": 6,
+      "combined_score": 0.7386601061170165,
+      "z_grad": -0.18592696224023966,
+      "z_rep": 0.8520346070667911,
+      "z_cam": 1.5498726735244983,
+      "avg_grad_strength": 0.0005613773915683851,
+      "avg_rep_richness": 3.476169204711914,
+      "avg_cam_quality": 0.852348076824206
+    },
+    {
+      "layer": "TCN.TCN.8.conv1d",
+      "block_index": 8,
+      "combined_score": 0.5395159496410724,
+      "z_grad": 0.3554596185512876,
+      "z_rep": 1.0087387265050964,
+      "z_cam": 0.25434950386683325,
+      "avg_grad_strength": 0.0007385142816929147,
+      "avg_rep_richness": 3.7448424339294433,
+      "avg_cam_quality": 0.8084845912063242
+    },
+    {
+      "layer": "TCN.TCN.13.conv1d",
+      "block_index": 13,
+      "combined_score": 0.41301039093225916,
+      "z_grad": 0.3671152917165056,
+      "z_rep": 0.34189850898528407,
+      "z_cam": 0.5300173720949879,
+      "avg_grad_strength": 0.0007428876240737736,
+      "avg_rep_richness": 2.728003454208374,
+      "avg_cam_quality": 0.8178180819971782
+    },
+    {
+      "layer": "TCN.TCN.0.conv1d",
+      "block_index": 0,
+      "combined_score": 0.3322079329238788,
+      "z_grad": 0.6841995237455417,
+      "z_rep": -0.27831884196605694,
+      "z_cam": 0.5907431169921517,
+      "avg_grad_strength": 0.0008723304432351142,
+      "avg_rep_richness": 2.031776547431946,
+      "avg_cam_quality": 0.8198741184311972
+    },
+    {
+      "layer": "TCN.TCN.14.conv1d",
+      "block_index": 14,
+      "combined_score": 0.31137606154479414,
+      "z_grad": -0.5034598323000653,
+      "z_rep": 0.5960027068345372,
+      "z_cam": 0.8415853100999106,
+      "avg_grad_strength": 0.0004779674403835088,
+      "avg_rep_richness": 3.078038454055786,
+      "avg_cam_quality": 0.8283670679881299
+    },
+    {
+      "layer": "TCN.TCN.1.conv1d",
+      "block_index": 1,
+      "combined_score": 0.30299402208119586,
+      "z_grad": 0.8877273791410404,
+      "z_rep": -0.7328583430945342,
+      "z_cam": 0.7541130301970814,
+      "avg_grad_strength": 0.0009670674277003855,
+      "avg_rep_richness": 1.6371601104736329,
+      "avg_cam_quality": 0.8254054543471365
+    },
+    {
+      "layer": "TCN.TCN.2.conv1d",
+      "block_index": 2,
+      "combined_score": 0.2567153716170079,
+      "z_grad": 0.45838671075187076,
+      "z_rep": -0.8463560205505287,
+      "z_cam": 1.1581154246496816,
+      "avg_grad_strength": 0.0007780413085129112,
+      "avg_rep_richness": 1.5512195348739624,
+      "avg_cam_quality": 0.8390840620584475
+    },
+    {
+      "layer": "TCN.TCN.20.conv1d",
+      "block_index": 20,
+      "combined_score": 0.21659565181068682,
+      "z_grad": 0.9294216821875528,
+      "z_rep": -1.0797367788458752,
+      "z_cam": 0.8001020520903828,
+      "avg_grad_strength": 0.0009877099306322633,
+      "avg_rep_richness": 1.3884172201156617,
+      "avg_cam_quality": 0.826962538656891
+    },
+    {
+      "layer": "TCN.TCN.5.conv1d",
+      "block_index": 5,
+      "combined_score": 0.13242182455508247,
+      "z_grad": -0.05819031196288612,
+      "z_rep": 0.19068329044320959,
+      "z_cam": 0.264772495184924,
+      "avg_grad_strength": 0.0005989033321384341,
+      "avg_rep_richness": 2.538895320892334,
+      "avg_cam_quality": 0.808837490128153
+    },
+    {
+      "layer": "TCN.TCN.11.conv1d",
+      "block_index": 11,
+      "combined_score": 0.08742888132881622,
+      "z_grad": -0.10031889842029172,
+      "z_rep": 0.3532549661943786,
+      "z_cam": 0.009350576212361836,
+      "avg_grad_strength": 0.0005862576508661732,
+      "avg_rep_richness": 2.742761754989624,
+      "avg_cam_quality": 0.8001894814072397
+    },
+    {
+      "layer": "TCN.TCN.18.conv1d",
+      "block_index": 18,
+      "combined_score": 0.07513241187484439,
+      "z_grad": -0.6143765828652415,
+      "z_rep": 0.3479283592758534,
+      "z_cam": 0.4918454592139213,
+      "avg_grad_strength": 0.0004518526635365561,
+      "avg_rep_richness": 2.7358296394348143,
+      "avg_cam_quality": 0.8165256673257307
+    },
+    {
+      "layer": "TCN.TCN.16.conv1d",
+      "block_index": 16,
+      "combined_score": 0.041684927962630326,
+      "z_grad": 0.008149293286646313,
+      "z_rep": 0.48368991363252756,
+      "z_cam": -0.3667844230312829,
+      "avg_grad_strength": 0.0006193716340931133,
+      "avg_rep_richness": 2.918103075027466,
+      "avg_cam_quality": 0.7874544006953561
+    },
+    {
+      "layer": "TCN.TCN.10.conv1d",
+      "block_index": 10,
+      "combined_score": 0.010310097399069943,
+      "z_grad": -1.0837570028411767,
+      "z_rep": 0.9781452413991699,
+      "z_cam": 0.13654205363921662,
+      "avg_grad_strength": 0.00035623294388642535,
+      "avg_rep_richness": 3.690806007385254,
+      "avg_cam_quality": 0.8044958972796044
+    },
+    {
+      "layer": "TCN.TCN.17.conv1d",
+      "block_index": 17,
+      "combined_score": 0.009987690468112653,
+      "z_grad": -0.9847228436244647,
+      "z_rep": 0.44216326482290946,
+      "z_cam": 0.5725226502058932,
+      "avg_grad_strength": 0.00037456000281963495,
+      "avg_rep_richness": 2.861096239089966,
+      "avg_cam_quality": 0.8192572146184762
+    },
+    {
+      "layer": "TCN.TCN.4.conv1d",
+      "block_index": 4,
+      "combined_score": -0.007891154861309924,
+      "z_grad": -0.7614595609716284,
+      "z_rep": 0.29242076662106503,
+      "z_cam": 0.44536532976663357,
+      "avg_grad_strength": 0.0004194100969471037,
+      "avg_rep_richness": 2.6646256923675535,
+      "avg_cam_quality": 0.8149519552244897
+    },
+    {
+      "layer": "TCN.TCN.7.conv1d",
+      "block_index": 7,
+      "combined_score": -0.039868255649015895,
+      "z_grad": -1.3109828524106826,
+      "z_rep": 0.934543190081849,
+      "z_cam": 0.25683489538178583,
+      "avg_grad_strength": 0.0003175008125253953,
+      "avg_rep_richness": 3.6151376724243165,
+      "avg_cam_quality": 0.8085687409440705
+    },
+    {
+      "layer": "TCN.TCN.21.conv1d",
+      "block_index": 21,
+      "combined_score": -0.09282981750666784,
+      "z_grad": 2.3239165168106024,
+      "z_rep": -2.204535998058006,
+      "z_cam": -0.3978699712726,
+      "avg_grad_strength": 0.0020017762552015485,
+      "avg_rep_richness": 0.8136563658714294,
+      "avg_cam_quality": 0.7864019143098233
+    },
+    {
+      "layer": "TCN.TCN.3.conv1d",
+      "block_index": 3,
+      "combined_score": -0.10053737956292712,
+      "z_grad": 0.04916705835029227,
+      "z_rep": 0.4369816261363781,
+      "z_cam": -0.7877608231754517,
+      "avg_grad_strength": 0.0006323756504571065,
+      "avg_rep_richness": 2.8540616035461426,
+      "avg_cam_quality": 0.7732010915260027
+    },
+    {
+      "layer": "TCN.TCN.23.conv1d",
+      "block_index": 23,
+      "combined_score": -0.17884546865121506,
+      "z_grad": 1.9642849868627628,
+      "z_rep": -2.5329128576186886,
+      "z_cam": 0.03209146480228068,
+      "avg_grad_strength": 0.001668388955295086,
+      "avg_rep_richness": 0.696125078201294,
+      "avg_cam_quality": 0.800959436482505
+    },
+    {
+      "layer": "TCN.TCN.9.conv1d",
+      "block_index": 9,
+      "combined_score": -0.27751902380276966,
+      "z_grad": -0.1033421873940496,
+      "z_rep": 0.4487050041024881,
+      "z_cam": -1.1779198881167474,
+      "avg_grad_strength": 0.0005853604903677479,
+      "avg_rep_richness": 2.8700021266937257,
+      "avg_cam_quality": 0.7599911876550739
+    },
+    {
+      "layer": "TCN.TCN.19.conv1d",
+      "block_index": 19,
+      "combined_score": -0.411310996193954,
+      "z_grad": -0.38361475021377056,
+      "z_rep": -0.12705750721945608,
+      "z_cam": -0.7232607311486353,
+      "avg_grad_strength": 0.000507883372483775,
+      "avg_rep_richness": 2.1831600666046143,
+      "avg_cam_quality": 0.7753849188208228
+    },
+    {
+      "layer": "TCN.TCN.12.conv1d",
+      "block_index": 12,
+      "combined_score": -0.6451777797688144,
+      "z_grad": -2.4114920468581063,
+      "z_rep": 1.0571171586615242,
+      "z_cam": -0.5811584511098611,
+      "avg_grad_strength": 0.00018181720952270553,
+      "avg_rep_richness": 3.8319111824035645,
+      "avg_cam_quality": 0.7801961807594233
+    },
+    {
+      "layer": "TCN.TCN.22.conv1d",
+      "block_index": 22,
+      "combined_score": -0.6732306989258176,
+      "z_grad": 0.9225520864903038,
+      "z_rep": -1.7842563094162551,
+      "z_cam": -1.1579878738515015,
+      "avg_grad_strength": 0.0009842787811066955,
+      "avg_rep_richness": 0.9934751629829407,
+      "avg_cam_quality": 0.7606660405959828
+    },
+    {
+      "layer": "TCN.TCN.15.conv1d",
+      "block_index": 15,
+      "combined_score": -1.0408307453339882,
+      "z_grad": -0.448736315791798,
+      "z_rep": 0.8217253260063339,
+      "z_cam": -3.495481246216501,
+      "avg_grad_strength": 0.0004914025194011629,
+      "avg_rep_richness": 3.426472234725952,
+      "avg_cam_quality": 0.6815237995909691
+    }
+  ]
+}

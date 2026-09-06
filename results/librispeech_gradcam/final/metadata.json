@@ -1,11 +1,11 @@
 {
   "source_filenames": [
-    "6930-75918-0000.flac",
-    "1320-122617-0001.flac"
+    "5639-40744-0000.flac",
+    "61-70968-0001.flac"
   ],
   "speaker_ids": [
-    "6930",
-    "1320"
+    "5639",
+    "61"
   ],
-  "target_layer": "TCN.TCN.12.conv1d"
+  "target_layer": "TCN.TCN.6.conv1d"
 }

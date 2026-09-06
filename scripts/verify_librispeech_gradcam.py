@@ -24,7 +24,17 @@ from gradcam import GradCAM
 
 SAMPLE_RATE = 16000
 TARGET_SECONDS = 3.0
-TARGET_LAYER = "TCN.TCN.12.conv1d"
+
+
+def get_target_layer():
+    scores_path = gradcam_root / "results" / "layer_selection" / "layer_scores.json"
+    if scores_path.exists():
+        data = json.loads(scores_path.read_text())
+        return data.get("winning_layer", "TCN.TCN.6.conv1d")
+    return "TCN.TCN.6.conv1d"
+
+
+TARGET_LAYER = get_target_layer()
 
 
 def normalize_audio(audio):

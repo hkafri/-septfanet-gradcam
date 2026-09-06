@@ -11,12 +11,12 @@ import soundfile as sf
 OUTPUT_DIR = Path(__file__).resolve().parents[1] / "data" / "librispeech_samples"
 
 
-def fetch_via_hf_streaming(output_dir, utterances_per_speaker=2):
+def fetch_via_hf_streaming(output_dir, num_speakers=40, utterances_per_speaker=2):
     import io
 
     from datasets import Audio, load_dataset
 
-    print("[*] Streaming openslr/librispeech_asr (clean, test split) from Hugging Face...")
+    print(f"[*] Streaming openslr/librispeech_asr (clean, test split) for {num_speakers} speakers...")
     ds = load_dataset("openslr/librispeech_asr", "clean", split="test", streaming=True)
     # Keep audio as raw encoded bytes; decoding via torchcodec is unavailable/unreliable
     # on this machine (missing FFmpeg shared libs), so decode manually with soundfile.
@@ -30,12 +30,12 @@ def fetch_via_hf_streaming(output_dir, utterances_per_speaker=2):
         bucket = seen_speakers.setdefault(speaker_id, [])
         if len(bucket) < utterances_per_speaker:
             bucket.append(example)
-        if len(seen_speakers) == 2 and all(len(v) == utterances_per_speaker for v in seen_speakers.values()):
+        if len(seen_speakers) == num_speakers and all(len(v) == utterances_per_speaker for v in seen_speakers.values()):
             break
 
-    if len(seen_speakers) < 2 or any(len(v) < utterances_per_speaker for v in seen_speakers.values()):
+    if len(seen_speakers) < num_speakers or any(len(v) < utterances_per_speaker for v in seen_speakers.values()):
         raise RuntimeError(
-            f"Could not collect {utterances_per_speaker} utterances for 2 distinct speakers "
+            f"Could not collect {utterances_per_speaker} utterances for {num_speakers} distinct speakers "
             f"(got: { {k: len(v) for k, v in seen_speakers.items()} })"
         )
 
@@ -52,10 +52,10 @@ def fetch_via_hf_streaming(output_dir, utterances_per_speaker=2):
     return saved
 
 
-def fetch_via_torchaudio(output_dir, utterances_per_speaker=2):
+def fetch_via_torchaudio(output_dir, num_speakers=40, utterances_per_speaker=2):
     import torchaudio
 
-    print("[*] Falling back to torchaudio.datasets.LIBRISPEECH full download (test-clean)...")
+    print(f"[*] Falling back to torchaudio.datasets.LIBRISPEECH full download (test-clean) for {num_speakers} speakers...")
     download_root = output_dir.parent / "librispeech_torchaudio_download"
     download_root.mkdir(parents=True, exist_ok=True)
     dataset = torchaudio.datasets.LIBRISPEECH(root=str(download_root), url="test-clean", download=True)
@@ -68,12 +68,12 @@ def fetch_via_torchaudio(output_dir, utterances_per_speaker=2):
         bucket = seen_speakers.setdefault(speaker_id, [])
         if len(bucket) < utterances_per_speaker:
             bucket.append((waveform, sr, speaker_id, chapter_id, utterance_id))
-        if len(seen_speakers) == 2 and all(len(v) == utterances_per_speaker for v in seen_speakers.values()):
+        if len(seen_speakers) == num_speakers and all(len(v) == utterances_per_speaker for v in seen_speakers.values()):
             break
 
-    if len(seen_speakers) < 2 or any(len(v) < utterances_per_speaker for v in seen_speakers.values()):
+    if len(seen_speakers) < num_speakers or any(len(v) < utterances_per_speaker for v in seen_speakers.values()):
         raise RuntimeError(
-            f"Could not collect {utterances_per_speaker} utterances for 2 distinct speakers "
+            f"Could not collect {utterances_per_speaker} utterances for {num_speakers} distinct speakers "
             f"(got: { {k: len(v) for k, v in seen_speakers.items()} })"
         )
 
