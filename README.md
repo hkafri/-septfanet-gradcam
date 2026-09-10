@@ -134,6 +134,14 @@ A visual comparison of CAM heatmaps across block depths ([cam_visual_comparison.
 
 Full layer rankings and bar charts across all 24 blocks are saved in [layer_scores.json](results/layer_selection/layer_scores.json) and [layer_scores.png](results/layer_selection/layer_scores.png).
 
+### Finalized Block 9 Example
+
+These figures use the finalized `TCN.TCN.9.conv1d` target layer and the existing four-panel renderer: mixture spectrogram, VAD-logit CAM curve, waveform CAM curve, and waveform-CAM overlay with the VAD-logit line. Both targets come from the same real LibriSpeech mixture formed from `5639-40744-0000.flac` and `61-70968-0001.flac`.
+
+![Speaker 0 example using TCN.TCN.9.conv1d](results/librispeech_gradcam/example_speaker0_block9.png)
+
+![Speaker 1 example using TCN.TCN.9.conv1d](results/librispeech_gradcam/example_speaker1_block9.png)
+
 ## Results
 
 Statistical validation across **selection set ($N = 20$ pairs)**, **disjoint held-out set ($N = 15$ pairs)**, and **pooled dataset ($N = 35$ total pairs)** using target layer `TCN.TCN.9.conv1d` and freshly drawn independent random control maps per pair:
